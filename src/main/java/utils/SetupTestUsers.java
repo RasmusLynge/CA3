@@ -2,13 +2,13 @@ package utils;
 
 import entity.Role;
 import entity.User;
+import entity.Wish;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 public class SetupTestUsers {
 
     public static void main(String[] args) {
-//      Persistence.generateSchema("pu", null);
 
         EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
 
@@ -23,6 +23,8 @@ public class SetupTestUsers {
         user.addRole(userRole);
         User admin = new User("admin", "adminpw");
         admin.addRole(adminRole);
+        Wish wish = new Wish("23", user);
+        em.persist(wish);
         em.persist(userRole);
         em.persist(adminRole);
         em.persist(user);

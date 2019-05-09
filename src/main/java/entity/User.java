@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,6 +36,9 @@ public class User implements Serializable {
         @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
     @ManyToMany
     private List<Role> roleList = new ArrayList();
+    
+    @OneToMany
+    private List<Wish> wishList = new ArrayList();
 
     public List<String> getRolesAsStrings() {
         if (roleList.isEmpty()) {
@@ -60,6 +64,15 @@ public class User implements Serializable {
         this.userName = userName;
         this.userPass = hashed;
     }
+
+    public List<Wish> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(List<Wish> wishList) {
+        this.wishList = wishList;
+    }
+    
 
     public String getUserName() {
         return userName;

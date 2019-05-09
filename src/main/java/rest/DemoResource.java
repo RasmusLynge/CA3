@@ -61,6 +61,6 @@ public class DemoResource {
   @RolesAllowed("admin")
   public String getFromAdmin() {
     String thisuser = securityContext.getUserPrincipal().getName();
-    return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
+    return "{ \"name\": \""+ securityContext.getUserPrincipal().getName() +"\", \"flightWish\": [\"1\", \"2\"]}";
   }
 }
