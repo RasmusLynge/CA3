@@ -94,7 +94,7 @@ public class IntegrationTest {
             .when()
             .get("/api/info/admin").then()
             .statusCode(200)
-            .body("msg", equalTo("Hello to (admin) User: admin"));
+            .body("name", equalTo("admin"));
   }
 
   @Test
@@ -119,7 +119,7 @@ public class IntegrationTest {
             .when()
             .get("/api/info/admin").then()
             .statusCode(200)
-            .body("msg", equalTo("Hello to (admin) User: user_admin"));
+            .body("name", equalTo("user_admin"));
   }
 
   @Test
@@ -131,7 +131,7 @@ public class IntegrationTest {
             .when()
             .get("/api/info/user").then()
             .statusCode(200)
-            .body("msg", equalTo("Hello to User: user_admin"));
+            .body("name", equalTo("user_admin"));
   }
 
   @Test
