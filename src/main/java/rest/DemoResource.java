@@ -11,7 +11,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 import utils.PuSelector;
@@ -59,7 +61,7 @@ public class DemoResource {
         List<Wish> wishes = new ArrayList();
         try {
             wishes = em.createQuery("select wish from Wish wish where wish.user.userName = :userName ").setParameter("userName", thisUser).getResultList();
-            String wishList = "{\"name\": \""+thisUser+"\", \"flightWish\":[";
+            String wishList = "{\"name\": \"" + thisUser + "\", \"flightWish\":[";
             for (int i = 0; i < wishes.size(); i++) {
                 wishList += gson.toJson(wishes.get(i).getWishID()) + ",";
             }
@@ -71,6 +73,25 @@ public class DemoResource {
             }
 
         } finally {
+            em.close();
+        }
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("user/{wish}")
+    @RolesAllowed("user")
+    public void postUserWish(@PathParam("wish") String wish) {
+        EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
+        String thisUser = securityContext.getUserPrincipal().getName();
+        User user = new User(thisUser, "");
+        Wish objectWish = new Wish(wish, user);
+        try {
+            em.getTransaction().begin();
+            em.persist(objectWish);
+
+        } finally {
+            em.getTransaction().commit();
             em.close();
         }
     }
