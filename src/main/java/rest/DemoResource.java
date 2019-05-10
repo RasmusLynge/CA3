@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -79,7 +81,7 @@ public class DemoResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("user/{wish}")
+    @Path("user/wishpost/{wish}")
     @RolesAllowed("user")
     public void postUserWish(@PathParam("wish") String wish) {
         EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
@@ -90,6 +92,30 @@ public class DemoResource {
             em.getTransaction().begin();
             em.persist(objectWish);
 
+        } finally {
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("user/wishdelete/{wish}")
+    @RolesAllowed("user")
+    public String deleteUserWish(@PathParam("wish") String wish) {
+        EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
+        String thisUser = securityContext.getUserPrincipal().getName();
+        User user = new User(thisUser, "");
+        
+        try {
+//            em.createQuery("DELETE FROM Wish wish WHERE wish.user.userName = :userName AND wish.wishID = :wishID ")
+//                    .setParameter("wishID", wish).setParameter("userName", thisUser);
+            Wish w = (Wish) em.createQuery("select wish from Wish wish where wish.user.userName = :userName and wish.wishID = :wishID")
+                    .setParameter("wishID", wish).setParameter("userName", thisUser).getSingleResult();
+            System.out.println("TEEESSSSTT: " +w);
+            em.getTransaction().begin();
+            em.remove(w);
+            return wish;
         } finally {
             em.getTransaction().commit();
             em.close();

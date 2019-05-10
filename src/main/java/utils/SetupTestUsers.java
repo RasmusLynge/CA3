@@ -4,7 +4,6 @@ import entity.Role;
 import entity.User;
 import entity.Wish;
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 
 public class SetupTestUsers {
 
