@@ -106,7 +106,7 @@ public class IntegrationTest {
             .when()
             .get("/api/info/user").then()
             .statusCode(200)
-            .body("msg", equalTo("Hello to User: user"));
+            .body("name", equalTo("user"));
   }
   
   @Test

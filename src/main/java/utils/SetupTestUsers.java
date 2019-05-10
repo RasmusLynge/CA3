@@ -25,6 +25,8 @@ public class SetupTestUsers {
         admin.addRole(adminRole);
         Wish wish = new Wish("23", user);
         em.persist(wish);
+        Wish wish2 = new Wish("25", user);
+        em.persist(wish2);
         em.persist(userRole);
         em.persist(adminRole);
         em.persist(user);

@@ -3,6 +3,8 @@ package entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import exceptions.AuthenticationException;
+import java.util.ArrayList;
+import java.util.List;
 import utils.PuSelector;
 
 /**
@@ -35,6 +37,11 @@ public class UserFacade {
             em.close();
         }
         return user;
+    }
+    
+    public List<Wish> getUserWish(String username) {
+        List<Wish> wishes = new ArrayList();
+        return wishes;
     }
 
 }
