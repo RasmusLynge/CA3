@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import entity.User;
 import entity.Wish;
+import fetch.ParallelPinger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -57,17 +58,19 @@ public class DemoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("user")
     @RolesAllowed("user")
-    public String getFromUser() {
+    public String getFromUser() throws Exception {
         EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
         String thisUser = securityContext.getUserPrincipal().getName();
         List<Wish> wishes = new ArrayList();
         try {
             wishes = em.createQuery("select wish from Wish wish where wish.user.userName = :userName ").setParameter("userName", thisUser).getResultList();
-            String wishList = "{\"name\": \"" + thisUser + "\", \"flightWish\":[";
+            //String wishList = "{\"name\": \"" + thisUser + "\", \"flightWish\":[";
+            String jsonString = "{\"name\":\"" + thisUser + "\",\"flightWish\":[";
             for (int i = 0; i < wishes.size(); i++) {
-                wishList += gson.toJson(wishes.get(i).getWishID()) + ",";
-            }
-            String outPut = wishList.substring(0, wishList.length() - 1);
+                jsonString += ParallelPinger.getJsonFromAllServers(wishes.get(i).getWishID())+",";
+            }  
+            
+            String outPut = jsonString.substring(0, jsonString.length() - 1);
             if (wishes.size() > 0) {
                 return outPut + "]}";
             } else {
@@ -106,13 +109,13 @@ public class DemoResource {
         EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
         String thisUser = securityContext.getUserPrincipal().getName();
         User user = new User(thisUser, "");
-        
+
         try {
 //            em.createQuery("DELETE FROM Wish wish WHERE wish.user.userName = :userName AND wish.wishID = :wishID ")
 //                    .setParameter("wishID", wish).setParameter("userName", thisUser);
             Wish w = (Wish) em.createQuery("select wish from Wish wish where wish.user.userName = :userName and wish.wishID = :wishID")
                     .setParameter("wishID", wish).setParameter("userName", thisUser).getSingleResult();
-            System.out.println("TEEESSSSTT: " +w);
+            System.out.println("TEEESSSSTT: " + w);
             em.getTransaction().begin();
             em.remove(w);
             return wish;
