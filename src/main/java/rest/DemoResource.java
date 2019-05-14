@@ -67,9 +67,9 @@ public class DemoResource {
             //String wishList = "{\"name\": \"" + thisUser + "\", \"flightWish\":[";
             String jsonString = "{\"name\":\"" + thisUser + "\",\"flightWish\":[";
             for (int i = 0; i < wishes.size(); i++) {
-                jsonString += ParallelPinger.getJsonFromAllServers(wishes.get(i).getWishID())+",";
-            }  
-            
+                jsonString += ParallelPinger.getJsonFromAllServers(wishes.get(i).getWishID()) + ",";
+            }
+
             String outPut = jsonString.substring(0, jsonString.length() - 1);
             if (wishes.size() > 0) {
                 return outPut + "]}";
@@ -87,17 +87,24 @@ public class DemoResource {
     @Path("user/wishpost/{wish}")
     @RolesAllowed("user")
     public void postUserWish(@PathParam("wish") String wish) {
+        EntityManager em1 = PuSelector.getEntityManagerFactory("pu").createEntityManager();
         EntityManager em = PuSelector.getEntityManagerFactory("pu").createEntityManager();
         String thisUser = securityContext.getUserPrincipal().getName();
         User user = new User(thisUser, "");
         Wish objectWish = new Wish(wish, user);
-        try {
-            em.getTransaction().begin();
-            em.persist(objectWish);
+        List isInDatabase = em1.createQuery("select wish from Wish wish where wish.wishID = :wishID ").setParameter("wishID", wish).getResultList();
 
-        } finally {
-            em.getTransaction().commit();
-            em.close();
+        if (isInDatabase.size() > 0) {
+            System.out.println("ALLEREDE I DATABASE ERRORROROROROROO");
+        } else {
+            try {
+                em.getTransaction().begin();
+                em.persist(objectWish);
+
+            } finally {
+                em.getTransaction().commit();
+                em.close();
+            }
         }
     }
 
