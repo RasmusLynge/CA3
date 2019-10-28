@@ -51,7 +51,7 @@ public class ParallelPinger {
         List<Future<String>> futures = new ArrayList<>();
 
 
-            Callable<String> pingUrlCallable = new HTTPFetcher("https://magnusklitmose.com/Flights-1.0/api/flight/" + param);
+            Callable<String> pingUrlCallable = new HTTPFetcher("https://rasmuslynge.com/Flights-1.0/api/flight/" + param);
             System.out.println("https://magnusklitmose.com/Flights-1.0/api/flight/" + param);
             Future<String> fut = executor.submit(pingUrlCallable);
             futures.add(fut);
